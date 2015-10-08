@@ -4,6 +4,7 @@
     Layout.Title = T("Add New Tenant").ToString();
 
     Script.Require("jQuery").AtFoot();
+    Script.Require("ShapesBase").AtFoot();
     Script.Include(Url.Content("~/Themes/TheAdmin/Scripts/admin.js")).AtFoot();
     Script.Include("multi-tenancy.admin.js").AtFoot();
 }
@@ -45,7 +46,7 @@
                 <span data-controllerid="sqlDatabaseOption">
                     <label for="DatabaseConnectionString">@T("Connection string")</label>
                     @Html.EditorFor(svm => svm.DatabaseConnectionString)
-                    <span class="hint">@T("Example:") @T("Data Source=sqlServerName;Initial Catalog=dbName;Persist Security Info=True;User ID=userName;Password=password")</span>
+                    <span class="hint">@T("Example:") @T("Data Source=sqlServerName;Initial Catalog=dbName;User ID=userName;Password=password")</span>
                 </span>
                 <span data-controllerid="sqlDatabaseOption">
                     <label for="DatabaseTablePrefix">@T("Database Table Prefix")</label>
