@@ -1,0 +1,13 @@
+[
+	{
+		"config": {
+			"importCustomModulePaths": true,
+			"importCustomThemePaths": true
+		}
+	},
+	{
+		"inputs": [
+			"Orchard.Web/{Core,Modules,Themes}/*/Assets.json"
+		]	
+	}
+]

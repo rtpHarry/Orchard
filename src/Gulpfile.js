@@ -76,9 +76,20 @@ gulp.task("watch", function () {
 /*
 ** ASSET GROUPS
 */
-
 function getAssetGroups() {
+    var assetsConfig = require("./assetsConfig.json");
+    //if(assetsConfig.importCustomModulePaths)
+    // if (get modules or themes)
+        // run web.config loader
+        // call getAssetManifestPaths
+    // just pass to getAssetManifestPaths 
+}
+function getAssetManifestPaths(){
     var assetManifestPaths = glob.sync("Orchard.Web/{Core,Modules,Themes}/*/Assets.json");
+    getAssetGroupsTEMP(assetManifestPaths);
+}
+
+function getAssetGroupsTEMP(assetManifestPaths) {	
     var assetGroups = [];
     assetManifestPaths.forEach(function (assetManifestPath) {
         var assetManifest = require("./" + assetManifestPath);
