@@ -69,9 +69,12 @@ namespace Orchard.Blogs.Commands {
         [OrchardSwitch]
         public bool Homepage { get; set; }
 
+        [OrchardSwitch]
+        public bool CreateWelcomePost { get; set; }
+
         [CommandName("blog create")]
-        [CommandHelp("blog create [/Slug:<slug>] /Title:<title> [/Owner:<username>] [/Description:<description>] [/MenuName:<name>] [/MenuText:<menu text>] [/Homepage:true|false]\r\n\t" + "Creates a new Blog")]
-        [OrchardSwitches("Slug,Title,Owner,Description,MenuText,Homepage,MenuName")]
+        [CommandHelp("blog create [/Slug:<slug>] /Title:<title> [/Owner:<username>] [/Description:<description>] [/MenuName:<name>] [/MenuText:<menu text>] [/Homepage:true|false] [/CreateWelcomePost:true|false]\r\n\t" + "Creates a new Blog")]
+        [OrchardSwitches("Slug,Title,Owner,Description,MenuText,Homepage,MenuName,CreateWelcomePost")]
         public void Create() {
             if (String.IsNullOrEmpty(Owner)) {
                 Owner = _siteService.GetSiteSettings().SuperUser;
@@ -110,6 +113,44 @@ namespace Orchard.Blogs.Commands {
                     menuItem.As<MenuPart>().MenuText = MenuText;
                     menuItem.As<MenuPart>().Menu = menu;
                 }
+            }
+
+            if(CreateWelcomePost) {
+                var blogPost = _contentManager.New<BlogPostPart>("BlogPost");
+
+                var text = T(
+                    @"<p>You've successfully setup your Orchard Site and this is the homepage of your new site.
+Here are a few things you can look at to get familiar with the application.
+Once you feel confident you don't need this anymore, you can
+<a href=""Admin/Contents/Edit/{0}"">remove it by going into editing mode</a>
+and replacing it with whatever you want.</p>
+<p>First things first - You'll probably want to <a href=""Admin/Settings"">manage your settings</a>
+and configure Orchard to your liking. After that, you can head over to
+<a href=""Admin/Themes"">manage themes to change or install new themes</a>
+and really make it your own. Once you're happy with a look and feel, it's time for some content.
+You can start creating new custom content types or start from the built-in ones by
+<a href=""Admin/Contents/Create/Page"">adding a page</a>, or <a href=""Admin/Navigation"">managing your menus.</a></p>
+<p>Finally, Orchard has been designed to be extended. It comes with a few built-in
+modules such as pages and blogs or themes. If you're looking to add additional functionality,
+you can do so by creating your own module or by installing one that somebody else built.
+Modules are created by other users of Orchard just like you so if you feel up to it,
+<a href=""http://orchardproject.net/contribution"">please consider participating</a>.</p>
+<p>Thanks for using Orchard – The Orchard Team </p>", blogPost.Id).Text;
+
+                blogPost.BlogPart = blog.As<BlogPart>();
+                blogPost.As<TitlePart>().Title = T("Welcome to Orchard!").Text;
+                blogPost.As<Autoroute.Models.AutoroutePart>().DisplayAlias = "welcome-to-orchard";
+                blogPost.As<BodyPart>().Text = text;
+                blogPost.Creator = owner;
+
+                _contentManager.Create(blogPost, VersionOptions.Published);
+
+                // blog
+                // title
+                // autoroute
+                // body
+                // comments
+                // common
             }
 
             Context.Output.WriteLine(T("Blog created successfully"));
